@@ -1403,40 +1403,6 @@ ALTER TABLE `video`
 
 
 --
--- SQL STATEMENTS
---
-
--- Courses with videos that extend beyond an hour
-SELECT course_name, SEC_TO_TIME(SUM( HOUR( video.video_duration) ) ) AS hours_summed from course
-JOIN video ON video.course_id = course.course_id
-GROUP BY course.course_name
-HAVING SEC_TO_TIME(SUM(HOUR(video.video_duration))) >= 1;
-
--- Show all courses grouped by author
-SELECT author_name, course_name FROM course
-ORDER BY author_name;
-
--- Show all students with a Skill IQ above 90 for any given path
-SELECT users.name, student.student_type, path.name AS path_name, score.student_score from path
-JOIN skilliq ON skilliq.path_id = path.path_id
-JOIN score ON score.skilliqID = skilliq.skilliq_id
-JOIN student ON student.student_type = score.student_type
-JOIN users ON users.user_id = student.student_type
-WHERE score.student_score > 90
-ORDER BY path.name;
-
--- Show courses that each user is currently enrolled in
-SELECT users.name, course.course_name, enrollment.enrollment_id FROM users
-JOIN enrollment ON enrollment.users_id=users.user_id
-JOIN course ON course.course_id=enrollment.course_id ORDER BY users.user_id;
-
--- Show all course comments
-SELECT course.course_id, course.course_name, users.name, text FROM comment
-JOIN enrollment ON comment.enrollment_id = enrollment.enrollment_id
-JOIN users ON enrollment.users_id = users.user_id
-JOIN course ON enrollment.course_id = course.course_id;
-
---
 -- VIEWS --
 --
 
@@ -1474,3 +1440,37 @@ JOIN course ON enrollment.course_id = course.course_id;
 --  JOIN employee ON pluralconsultant.employee_id = employee.employee_id
 --  WHERE author.author_type = getauthor;
 --  END //
+
+--
+-- SQL STATEMENTS
+--
+
+-- Courses with videos that extend beyond an hour
+SELECT course_name, SEC_TO_TIME(SUM( HOUR( video.video_duration) ) ) AS hours_summed from course
+JOIN video ON video.course_id = course.course_id
+GROUP BY course.course_name
+HAVING SEC_TO_TIME(SUM(HOUR(video.video_duration))) >= 1;
+
+-- Show all courses grouped by author
+SELECT author_name, course_name FROM course
+ORDER BY author_name;
+
+-- Show all students with a Skill IQ above 90 for any given path
+SELECT users.name, student.student_type, path.name AS path_name, score.student_score from path
+JOIN skilliq ON skilliq.path_id = path.path_id
+JOIN score ON score.skilliqID = skilliq.skilliq_id
+JOIN student ON student.student_type = score.student_type
+JOIN users ON users.user_id = student.student_type
+WHERE score.student_score > 90
+ORDER BY path.name;
+
+-- Show courses that each user is currently enrolled in
+SELECT users.name, course.course_name, enrollment.enrollment_id FROM users
+JOIN enrollment ON enrollment.users_id=users.user_id
+JOIN course ON course.course_id=enrollment.course_id ORDER BY users.user_id;
+
+-- Show all course comments
+SELECT course.course_id, course.course_name, users.name, text FROM comment
+JOIN enrollment ON comment.enrollment_id = enrollment.enrollment_id
+JOIN users ON enrollment.users_id = users.user_id
+JOIN course ON enrollment.course_id = course.course_id;
